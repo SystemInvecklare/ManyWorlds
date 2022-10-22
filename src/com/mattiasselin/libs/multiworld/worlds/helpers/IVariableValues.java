@@ -1,6 +1,6 @@
-package com.mattiasselin.libs.multiworld.opt;
+package com.mattiasselin.libs.multiworld.worlds.helpers;
 
-import com.mattiasselin.libs.multiworld.Variable;
+import com.mattiasselin.libs.multiworld.expression.Variable;
 
 public interface IVariableValues {
 	<T> T get(Variable<T> variable);

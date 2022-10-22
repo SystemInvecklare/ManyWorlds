@@ -1,6 +1,8 @@
-package com.mattiasselin.libs.multiworld;
+package com.mattiasselin.libs.multiworld.expression;
 
-public class Variable<T> implements IExpression<T> {
+import com.mattiasselin.libs.multiworld.IWorldState;
+
+public class Variable<T> extends Expression<T> {
 	private final String name;
 	
 	public Variable() {
@@ -8,14 +10,16 @@ public class Variable<T> implements IExpression<T> {
 	}
 	
 	public Variable(String name) {
+		super(UseSpecial.USE_SPECIAL);
 		this.name = name;
 	}
-
+	
+	
 	@Override
-	public T eval(IWorldState worldState) {
+	protected T specialApply(IWorldState worldState) {
 		return worldState.getValue(this);
 	}
-	
+
 	public String getName() {
 		return name;
 	}

@@ -2,8 +2,9 @@ package com.mattiasselin.libs.multiworld;
 
 import java.util.Objects;
 
-import com.mattiasselin.libs.multiworld.opt.IVariableValues;
-import com.mattiasselin.libs.multiworld.opt.OrderedListVariableValues;
+import com.mattiasselin.libs.multiworld.expression.Variable;
+import com.mattiasselin.libs.multiworld.worlds.helpers.IVariableValues;
+import com.mattiasselin.libs.multiworld.worlds.helpers.OrderedListVariableValues;
 
 public class WorldState implements IWorldState {
 	private final IVariableValues variableValues = new OrderedListVariableValues();

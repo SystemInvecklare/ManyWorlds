@@ -1,7 +1,12 @@
-package com.mattiasselin.libs.multiworld;
+package com.mattiasselin.libs.multiworld.worlds.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mattiasselin.libs.multiworld.expression.Constant;
+import com.mattiasselin.libs.multiworld.expression.IStochasticExpression;
+import com.mattiasselin.libs.multiworld.expression.Variable;
+import com.mattiasselin.libs.multiworld.worlds.IWorlds;
 
 public class Scope {
 	private final IWorlds worlds;
@@ -17,13 +22,7 @@ public class Scope {
 		return variable;
 	}
 	
-	public <T> Variable<T> var(Class<T> type, IExpression<T> initialValue) {
-		Variable<T> variable = var(type);
-		worlds.set(variable, initialValue);
-		return variable;
-	}
-	
-	public <T> Variable<T> var(Class<T> type, IStochastic<T> initialValue) {
+	public <T> Variable<T> var(Class<T> type, IStochasticExpression<T> initialValue) {
 		Variable<T> variable = var(type);
 		worlds.set(variable, initialValue);
 		return variable;
@@ -39,13 +38,7 @@ public class Scope {
 		return variable;
 	}
 	
-	public <T> Variable<T> var(Class<T> type, String name, IExpression<T> initialValue) {
-		Variable<T> variable = var(type, name);
-		worlds.set(variable, initialValue);
-		return variable;
-	}
-	
-	public <T> Variable<T> var(Class<T> type, String name, IStochastic<T> initialValue) {
+	public <T> Variable<T> var(Class<T> type, String name, IStochasticExpression<T> initialValue) {
 		Variable<T> variable = var(type, name);
 		worlds.set(variable, initialValue);
 		return variable;

@@ -1,22 +1,18 @@
-package com.mattiasselin.libs.multiworld;
+package com.mattiasselin.libs.multiworld.expression;
 
 import java.util.Objects;
 
-public class Constant<T> implements IExpression<T> {
-	public static final IExpression<Integer> INT_ZERO = new Constant<Integer>(0);
-	public static final IExpression<Integer> INT_ONE = new Constant<Integer>(1);
+public class Constant<T> extends Expression<T> {
+	public static final Expression<Integer> INT_ZERO = new Constant<Integer>(0);
+	public static final Expression<Integer> INT_ONE = new Constant<Integer>(1);
 	
 	private final T value;
 	
 	public Constant(T value) {
+		super(worldState -> value);
 		this.value = value;
 	}
 
-	@Override
-	public T eval(IWorldState worldState) {
-		return value;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof Constant) {

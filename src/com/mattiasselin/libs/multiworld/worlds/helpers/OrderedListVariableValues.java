@@ -1,11 +1,11 @@
-package com.mattiasselin.libs.multiworld.opt;
+package com.mattiasselin.libs.multiworld.worlds.helpers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import com.mattiasselin.libs.multiworld.Variable;
+import com.mattiasselin.libs.multiworld.expression.Variable;
 
 public class OrderedListVariableValues implements IVariableValues {
 	private final List<Entry> entries = new ArrayList<OrderedListVariableValues.Entry>();
