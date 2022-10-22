@@ -11,6 +11,17 @@ public class Probability {
 	private Probability(float percent) {
 		this.percent = percent;
 	}
+	
+	@Override
+	public String toString() {
+		if(this == CERTAIN) {
+			return "100%";
+		} else if(this == IMPOSSIBLE) {
+			return "0%";
+		} else {
+			return percent+"%";
+		}
+	}
 
 	public <T extends Collection<Probability>> T splitEqually(T result, int parts) {
 		float newPercent = -1;

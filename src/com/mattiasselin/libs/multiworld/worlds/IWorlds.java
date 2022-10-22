@@ -1,7 +1,9 @@
 package com.mattiasselin.libs.multiworld.worlds;
 
+import java.util.Comparator;
 import java.util.function.BiConsumer;
 
+import com.mattiasselin.libs.multiworld.Probability;
 import com.mattiasselin.libs.multiworld.expression.Constant;
 import com.mattiasselin.libs.multiworld.expression.IStochasticExpression;
 import com.mattiasselin.libs.multiworld.expression.Variable;
@@ -33,4 +35,15 @@ public interface IWorlds {
 	<T> void doStochastic(IStochasticExpression<T> stochastic, BiConsumer<IWorlds, T> outcomeHandler);
 	
 	void whileLoop(IStochasticExpression<Boolean> condition, IClause then);
+	
+	default <T> void splitOn(IStochasticExpression<T> value, BiConsumer<IWorlds, T> outcomeHandler) {
+		splitOn(value, outcomeHandler, null);
+	}
+	
+	<T> void splitOn(IStochasticExpression<T> value, BiConsumer<IWorlds, T> outcomeHandler, Comparator<IWorlds> order);
+	
+	Probability getTotalProbability();
+	
+	static Comparator<IWorlds> ORDER_BY_MOST_LIKELY = (w1,w2) -> Float.compare(w2.getTotalProbability().getPercentChance(), w1.getTotalProbability().getPercentChance());
+	static Comparator<IWorlds> ORDER_BY_LEAST_LIKELY = (w1,w2) -> Float.compare(w1.getTotalProbability().getPercentChance(), w2.getTotalProbability().getPercentChance());
 }

@@ -8,14 +8,6 @@ import com.mattiasselin.libs.multiworld.IWorldState;
 import com.mattiasselin.libs.multiworld.WorldTerm;
 
 public class Expression<T> implements IStochasticExpression<T> {
-	public static final BiFunction<Boolean, Boolean, Boolean> AND = (b1,b2) -> b1 && b2;
-	public static final BiFunction<Boolean, Boolean, Boolean> OR = (b1,b2) -> b1 || b2;
-	public static final Function<Boolean, Boolean> NOT = (b) -> !b;
-	
-	public static final BiFunction<Integer, Integer, Integer> INT_ADD = (i1,i2) -> i1 + i2;
-	public static final BiFunction<Integer, Integer, Integer> INT_SUB = (i1,i2) -> i1 - i2;
-	public static final BiFunction<Integer, Integer, Integer> INT_MULT = (i1,i2) -> i1*i2;
-	
 	protected enum UseSpecial {
 		USE_SPECIAL;
 	}
@@ -100,7 +92,84 @@ public class Expression<T> implements IStochasticExpression<T> {
 		return func(expression, Constant.INT_ONE, (a,b) -> a + b);
 	}
 	
-	public static IStochasticExpression<Integer> plus_int(IStochasticExpression<Integer> a, IStochasticExpression<Integer> b) {
-		return func(a, b, (aa, bb) -> aa + bb);
+	public static final class Boolean_ {
+		private Boolean_() {}
+		
+		public static final IStochasticExpression<Boolean> and(IStochasticExpression<Boolean> a, IStochasticExpression<Boolean> b) {
+			return func(a, b, (aa, bb) -> aa && bb);
+		}
+		
+		public static final IStochasticExpression<Boolean> or(IStochasticExpression<Boolean> a, IStochasticExpression<Boolean> b) {
+			return func(a, b, (aa, bb) -> aa || bb);
+		}
+		
+		public static final IStochasticExpression<Boolean> not(IStochasticExpression<Boolean> expression) {
+			return func(expression, val -> !val);
+		}
 	}
+	
+	public static final class Int {
+		private Int() {}
+		
+		public static IStochasticExpression<Integer> plus(IStochasticExpression<Integer> a, IStochasticExpression<Integer> b) {
+			return func(a, b, (aa, bb) -> aa + bb);
+		}
+		
+		public static IStochasticExpression<Integer> minus(IStochasticExpression<Integer> a, IStochasticExpression<Integer> b) {
+			return func(a, b, (aa, bb) -> aa - bb);
+		}
+		
+		public static IStochasticExpression<Integer> mult(IStochasticExpression<Integer> a, IStochasticExpression<Integer> b) {
+			return func(a, b, (aa, bb) -> aa*bb);
+		}
+		
+		public static IStochasticExpression<Boolean> greaterThan(IStochasticExpression<Integer> expression, int constant) {
+			return greaterThan(expression, new Constant<Integer>(constant));
+		}
+		
+		public static IStochasticExpression<Boolean> greaterThan(IStochasticExpression<Integer> expression, IStochasticExpression<Integer> other) {
+			return func(expression, other, (a,b) -> a > b);
+		}
+		
+		public static IStochasticExpression<Boolean> greaterThanOrEqual(IStochasticExpression<Integer> expression, int constant) {
+			return greaterThanOrEqual(expression, new Constant<>(constant));
+		}
+		
+		public static IStochasticExpression<Boolean> greaterThanOrEqual(IStochasticExpression<Integer> expression, IStochasticExpression<Integer> other) {
+			return func(expression, other, (a,b) -> a >= b);
+		}
+		
+		public static IStochasticExpression<Boolean> lessThan(IStochasticExpression<Integer> expression, int constant) {
+			return lessThan(expression, new Constant<>(constant));
+		}
+		
+		public static IStochasticExpression<Boolean> lessThan(IStochasticExpression<Integer> expression, IStochasticExpression<Integer> other) {
+			return func(expression, other, (a,b) -> a < b);
+		}
+		
+		public static IStochasticExpression<Boolean> lessThanOrEqual(IStochasticExpression<Integer> expression, int constant) {
+			return lessThanOrEqual(expression, new Constant<>(constant));
+		}
+		
+		public static IStochasticExpression<Boolean> lessThanOrEqual(IStochasticExpression<Integer> expression, IStochasticExpression<Integer> other) {
+			return func(expression, other, (a,b) -> a <= b);
+		}
+		
+		public static IStochasticExpression<Boolean> equalTo(IStochasticExpression<Integer> expression, int constant) {
+			return equalTo(expression, new Constant<>(constant));
+		}
+		
+		public static IStochasticExpression<Boolean> equalTo(IStochasticExpression<Integer> expression, IStochasticExpression<Integer> other) {
+			return func(expression, other, (a,b) -> a == b);
+		}
+		
+		public static IStochasticExpression<Boolean> notEqualTo(IStochasticExpression<Integer> expression, int constant) {
+			return notEqualTo(expression, new Constant<>(constant));
+		}
+		
+		public static IStochasticExpression<Boolean> notEqualTo(IStochasticExpression<Integer> expression, IStochasticExpression<Integer> other) {
+			return func(expression, other, (a,b) -> a != b);
+		}
+	}
+	
 }

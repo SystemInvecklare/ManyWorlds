@@ -57,6 +57,15 @@ public class WorldTerm {
 		}
 	}
 	
+
+	public static Probability probabilitySum(List<WorldTerm> worlds) {
+		ProbabilityAccumulator accumulator = new ProbabilityAccumulator(Probability.IMPOSSIBLE);
+		for(WorldTerm worldTerm : worlds) {
+			accumulator.accumulate(worldTerm.probability);
+		}
+		return accumulator.probability;
+	}
+	
 	private static class ProbabilityAccumulator {
 		private Probability probability;
 

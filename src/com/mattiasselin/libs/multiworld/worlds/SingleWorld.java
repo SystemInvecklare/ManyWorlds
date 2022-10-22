@@ -1,5 +1,6 @@
 package com.mattiasselin.libs.multiworld.worlds;
 
+import java.util.Comparator;
 import java.util.function.BiConsumer;
 
 import com.mattiasselin.libs.multiworld.Probability;
@@ -51,6 +52,16 @@ public class SingleWorld implements IWorlds {
 	@Override
 	public void whileLoop(IStochasticExpression<Boolean> condition, IClause then) {
 		doStochastic(condition, new WhileLoop(condition, then));
+	}
+	
+	@Override
+	public <T> void splitOn(IStochasticExpression<T> value, BiConsumer<IWorlds, T> outcomeHandler, Comparator<IWorlds> ignoredOrder) {
+		doStochastic(value, outcomeHandler);
+	}
+	
+	@Override
+	public Probability getTotalProbability() {
+		return Probability.CERTAIN;
 	}
 	
 	public static <T> T collapseStochastic(IStochasticExpression<T> stochastic, WorldState state) {
