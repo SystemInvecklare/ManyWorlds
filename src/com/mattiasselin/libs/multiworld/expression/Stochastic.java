@@ -99,11 +99,18 @@ public abstract class Stochastic<T> implements IStochasticExpression<T> {
 	}
 	
 	public static Stochastic<Integer> intRange(int from, int to) {
-		final int length = to-from+1;
+		return intRange(from, to, 1);
+	}
+	
+	public static Stochastic<Integer> intRange(int from, int to, int step) {
+		if((to - from)%step != 0) {
+			throw new IllegalArgumentException("Can't step from "+from+" to "+to+" in steps of "+step);
+		}
+		final int length = (to-from)/step+1;
 		Integer[] values = new Integer[length];
 		int[] weights = new int[length];
 		for(int i = 0; i < length; ++i) {
-			values[i] = from + i;
+			values[i] = from + i*step;
 			weights[i] = 1;
 		}
 		return new Stochastic.WithArray<Integer>(weights, values);

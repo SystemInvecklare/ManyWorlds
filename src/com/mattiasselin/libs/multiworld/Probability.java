@@ -54,4 +54,22 @@ public class Probability {
 	public float getPercentChance() {
 		return percent;
 	}
+	
+
+	public float weight(float value) {
+		return value*percent/100;
+	}
+
+	public Probability relativeTo(Probability biggerProbability) {
+		if(this.percent == 0) {
+			return Probability.IMPOSSIBLE;
+		}
+		if(this == biggerProbability || this.percent == biggerProbability.percent) {
+			return Probability.CERTAIN;
+		}
+		if(biggerProbability.percent == CERTAIN.percent) {
+			return this;
+		}
+		return new Probability(100 * this.percent / biggerProbability.percent);
+	}
 }

@@ -111,8 +111,16 @@ public class Expression<T> implements IStochasticExpression<T> {
 	public static final class Int {
 		private Int() {}
 		
+		public static IStochasticExpression<Integer> plus(IStochasticExpression<Integer> a, int b) {
+			return func(a, aa -> aa + b);
+		}
+		
 		public static IStochasticExpression<Integer> plus(IStochasticExpression<Integer> a, IStochasticExpression<Integer> b) {
 			return func(a, b, (aa, bb) -> aa + bb);
+		}
+		
+		public static IStochasticExpression<Integer> minus(IStochasticExpression<Integer> a, int b) {
+			return func(a, aa -> aa - b);
 		}
 		
 		public static IStochasticExpression<Integer> minus(IStochasticExpression<Integer> a, IStochasticExpression<Integer> b) {

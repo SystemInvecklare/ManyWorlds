@@ -3,6 +3,7 @@ package com.mattiasselin.libs.multiworld.worlds;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
 
+import com.mattiasselin.libs.multiworld.IWorldState;
 import com.mattiasselin.libs.multiworld.Probability;
 import com.mattiasselin.libs.multiworld.WorldState;
 import com.mattiasselin.libs.multiworld.WorldTerm;
@@ -47,6 +48,23 @@ public class SingleWorld implements IWorlds {
 				}
 			});
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T evaluate(IStochasticExpression<T> expression) {
+		if(expression instanceof Variable) {
+			return state.getValue((Variable<T>) expression);
+		} else {
+			final Object[] result = new Object[] {null}; 
+			doStochastic(expression, (worlds, value) -> {
+				result[0] = value;
+			});
+			return (T) result[0];
+		}
+	}
+	
+	public IWorldState asWorldState() {
+		return state;
 	}
 
 	@Override
