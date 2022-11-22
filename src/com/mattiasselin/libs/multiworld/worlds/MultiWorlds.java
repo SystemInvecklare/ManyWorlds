@@ -77,7 +77,11 @@ public class MultiWorlds implements IWorlds {
 				outcomeHandler.accept(subWorld, outcome);
 				subWorldCollector.addAll(subWorld.worlds);
 			});
-			if(subWorldCollector.size() > 1) {
+			boolean worldStateSplitOrChanged = subWorldCollector.size() > 1;
+			if(subWorldCollector.size() == 1 && !subWorldCollector.get(0).state.equals(worldTerm.state)) {
+				worldStateSplitOrChanged = true; //Changed!
+			}
+			if(worldStateSplitOrChanged) {
 				worldsIterator.remove();
 				WorldTerm.mergeWorlds(subWorldCollector);
 				newWorlds.addAll(subWorldCollector);
