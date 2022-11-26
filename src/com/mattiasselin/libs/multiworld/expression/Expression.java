@@ -92,11 +92,50 @@ public class Expression<T> implements IStochasticExpression<T> {
 		return func(expression, Constant.INT_ONE, (a,b) -> a + b);
 	}
 	
+	public static <T> IStochasticExpression<Boolean> notNull(IStochasticExpression<T> expression) {
+		return func(expression, a -> a != null);
+	}
+	
+	public static <T> IStochasticExpression<Boolean> isNull(IStochasticExpression<T> expression) {
+		return func(expression, a -> a == null);
+	}
+
+	public static <Super,Sub extends Super> IStochasticExpression<Super> cast(IStochasticExpression<Sub> expression) {
+		return (worldTerm, termHandler) -> expression.split(worldTerm, termHandler::accept);
+	}
+	
+	public static <T> IStochasticExpression<T> conditional(IStochasticExpression<Boolean> condition, T ifTrue, T ifFalse) {
+		return conditional(condition, new Constant<>(ifTrue), new Constant<>(ifFalse));
+	}
+	
+	public static <T> IStochasticExpression<T> conditional(IStochasticExpression<Boolean> condition, IStochasticExpression<? extends T> ifTrue, IStochasticExpression<? extends T> ifFalse) {
+		if(condition instanceof Expression && ifTrue instanceof Expression && ifFalse instanceof Expression) {
+			return new Expression<T>(worldState -> evalExpression(condition, worldState) ? evalExpression(ifTrue, worldState) : evalExpression(ifFalse, worldState));
+		} else {
+			return (worldTerm, termHandler) -> {
+				condition.split(worldTerm, (conditionSplitWorld, conditionValue) -> {
+					IStochasticExpression<T> result = (conditionValue ? cast(ifTrue) : cast(ifFalse));
+					result.split(conditionSplitWorld, termHandler);
+				});
+			};
+		}
+	}
+	
 	public static final class Boolean_ {
 		private Boolean_() {}
 		
 		public static final IStochasticExpression<Boolean> and(IStochasticExpression<Boolean> a, IStochasticExpression<Boolean> b) {
-			return func(a, b, (aa, bb) -> aa && bb);
+			//Should be faster since we only calculate second if first is true. Note: Could be further improved by checking if a or b Expression and evaluating expression before any splitting
+			return (worldTerm, termHandler) -> {
+				a.split(worldTerm, (splitWorld, aVal) -> {
+					if(aVal) {
+						b.split(splitWorld, termHandler);
+					} else {
+						termHandler.accept(splitWorld, false);
+					}
+				});
+			};
+//			return func(a, b, (aa, bb) -> aa && bb);
 		}
 		
 		public static final IStochasticExpression<Boolean> or(IStochasticExpression<Boolean> a, IStochasticExpression<Boolean> b) {
@@ -179,5 +218,4 @@ public class Expression<T> implements IStochasticExpression<T> {
 			return func(expression, other, (a,b) -> a != b);
 		}
 	}
-	
 }
