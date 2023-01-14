@@ -1,0 +1,21 @@
+apply plugin: "java-library"
+apply plugin: "maven"
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+group = 'com.github.SystemInvecklare'
+
+
+repositories {
+	mavenCentral()
+	maven { url 'https://jitpack.io' }
+}
+
+sourceSets.main.resources.srcDirs = ["src/main/java"]
+
+dependencies {
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
