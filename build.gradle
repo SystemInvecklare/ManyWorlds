@@ -13,6 +13,8 @@ repositories {
 
 sourceSets.main.resources.srcDirs = ["src/main/java"]
 
+sourceSets.test.resources.srcDirs = ["src/test/java"]
+
 dependencies {
 
     // Use JUnit test framework
