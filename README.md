@@ -233,3 +233,7 @@ Actual distribution:
 93.05388% -> You survived
 6.9461117% -> You died
 ```
+
+## Trackers
+
+Trackers are like variables, with one very important distinction: *they may not alter the simulation*. They may only be read after (using `sampleTracker` on a MultiWorlds or SingleWorld).

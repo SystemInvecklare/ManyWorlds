@@ -7,6 +7,8 @@ import com.mattiasselin.libs.multiworld.Probability;
 import com.mattiasselin.libs.multiworld.expression.Constant;
 import com.mattiasselin.libs.multiworld.expression.IStochasticExpression;
 import com.mattiasselin.libs.multiworld.expression.Variable;
+import com.mattiasselin.libs.multiworld.trackers.FlagTracker;
+import com.mattiasselin.libs.multiworld.trackers.MeanTracker;
 import com.mattiasselin.libs.multiworld.worlds.helpers.IClause;
 
 public interface IWorlds {
@@ -44,6 +46,14 @@ public interface IWorlds {
 	
 	Probability getTotalProbability();
 	
+	void setTracker(MeanTracker tracker, float value);
+	void multiplyTracker(MeanTracker tracker, float factor);
+	void addToTracker(MeanTracker tracker, float delta);
+	
+	void setTracker(FlagTracker tracker, boolean value);
+	void setTracker(FlagTracker tracker, Probability value);
+	FlagTrackerModifier modifyTracker(FlagTracker tracker);
+
 	static Comparator<IWorlds> ORDER_BY_MOST_LIKELY = (w1,w2) -> Float.compare(w2.getTotalProbability().getPercentChance(), w1.getTotalProbability().getPercentChance());
 	static Comparator<IWorlds> ORDER_BY_LEAST_LIKELY = (w1,w2) -> Float.compare(w1.getTotalProbability().getPercentChance(), w2.getTotalProbability().getPercentChance());
 }

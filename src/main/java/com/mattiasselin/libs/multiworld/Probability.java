@@ -1,6 +1,7 @@
 package com.mattiasselin.libs.multiworld;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class Probability {
 	public static final Probability CERTAIN = new Probability(100);
@@ -23,15 +24,12 @@ public class Probability {
 		}
 	}
 
-	public <T extends Collection<Probability>> T splitEqually(T result, int parts) {
+	public Probability splitEqually(int parts) {
 		float newPercent = -1;
 		if(parts > 0) {
 			newPercent = percent/parts;
 		}
-		for(int i = 0; i < parts; ++i) {
-			result.add(new Probability(newPercent));
-		}
-		return result;
+		return new Probability(newPercent);
 	}
 	
 	
@@ -49,6 +47,21 @@ public class Probability {
 
 	public Probability add(Probability other) {
 		return new Probability(this.percent+other.percent);
+	}
+
+	public Probability multiply(Probability other) {
+		return new Probability(this.percent*other.percent/100);
+	}
+	
+	public Probability complement() {
+		if(Objects.equals(this, CERTAIN)) {
+			return IMPOSSIBLE;
+		} else if(Objects.equals(this, IMPOSSIBLE)) {
+			return CERTAIN;
+		} else if(percent == 50f) {
+			return this;
+		}
+		return new Probability(100f - percent);
 	}
 
 	public float getPercentChance() {

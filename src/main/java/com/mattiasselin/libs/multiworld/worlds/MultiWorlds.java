@@ -16,14 +16,17 @@ import com.mattiasselin.libs.multiworld.WorldTerm;
 import com.mattiasselin.libs.multiworld.expression.Expression;
 import com.mattiasselin.libs.multiworld.expression.IStochasticExpression;
 import com.mattiasselin.libs.multiworld.expression.Variable;
+import com.mattiasselin.libs.multiworld.trackers.FlagTracker;
+import com.mattiasselin.libs.multiworld.trackers.MeanTracker;
 import com.mattiasselin.libs.multiworld.worlds.helpers.IClause;
+import com.mattiasselin.libs.multiworld.worlds.helpers.TrackerValues;
 import com.mattiasselin.libs.multiworld.worlds.helpers.WhileLoop;
 
 public class MultiWorlds implements IWorlds {
 	private final List<WorldTerm> worlds = new ArrayList<WorldTerm>();
 	
 	public MultiWorlds() {
-		this(new WorldTerm(new WorldState(), Probability.CERTAIN));
+		this(new WorldTerm(new WorldState(), Probability.CERTAIN, new TrackerValues()));
 	}
 	
 	public MultiWorlds(List<WorldTerm> worlds) {
@@ -85,6 +88,11 @@ public class MultiWorlds implements IWorlds {
 				worldsIterator.remove();
 				WorldTerm.mergeWorlds(subWorldCollector);
 				newWorlds.addAll(subWorldCollector);
+			} else if(subWorldCollector.size() == 1) {
+				WorldTerm subWorldTerm = subWorldCollector.get(0);
+				if(worldTerm != subWorldTerm) {
+					worldTerm.trackerValues.setTo(subWorldTerm.trackerValues);
+				}
 			}
 		}
 		worlds.addAll(newWorlds);
@@ -147,5 +155,66 @@ public class MultiWorlds implements IWorlds {
 	public <C extends Collection<WorldTerm>> C getWorlds(C result) {
 		result.addAll(worlds);
 		return result;
+	}
+	
+	@Override
+	public void setTracker(MeanTracker tracker, float value) {
+		for(WorldTerm term : worlds) {
+			term.trackerValues.setTracker(tracker, value);
+		}
+	}
+	
+	@Override
+	public void addToTracker(MeanTracker tracker, float delta) {
+		for(WorldTerm term : worlds) {
+			term.trackerValues.addToTracker(tracker, delta);
+		}
+	}
+	
+	@Override
+	public void multiplyTracker(MeanTracker tracker, float factor) {
+		for(WorldTerm term : worlds) {
+			term.trackerValues.multiplyTracker(tracker, factor);
+		}
+	}
+	
+	@Override
+	public void setTracker(FlagTracker tracker, boolean value) {
+		setTracker(tracker, value ? Probability.CERTAIN : Probability.IMPOSSIBLE);
+	}
+	
+	@Override
+	public void setTracker(FlagTracker tracker, Probability value) {
+		for(WorldTerm term : worlds) {
+			term.trackerValues.setTracker(tracker, value);
+		}
+	}
+	
+	@Override
+	public FlagTrackerModifier modifyTracker(FlagTracker tracker) {
+		return FlagTrackerModifier.from(worlds, tracker);
+	}
+	
+	/**
+	 * Get's the mean value of a MeanTracker. Intentionally not part of IWorlds interface to reduce chance of reading this while simulating.
+	 */
+	public float sampleTracker(MeanTracker tracker) {
+		float sumValue = 0;
+		Probability sumProbability = Probability.IMPOSSIBLE;
+		for(WorldTerm term : worlds) {
+			sumValue += term.probability.weight(term.trackerValues.getValue(tracker));
+			sumProbability = sumProbability.add(term.probability);
+		}
+		return sumValue*100/sumProbability.getPercentChance();
+	}
+	
+	public Probability sampleTracker(FlagTracker tracker) {
+		Probability sumValue = Probability.IMPOSSIBLE;
+		Probability sumProbability = Probability.IMPOSSIBLE;
+		for(WorldTerm term : worlds) {
+			sumValue = sumValue.add(term.trackerValues.getValue(tracker));
+			sumProbability = sumProbability.add(term.probability);
+		}
+		return sumValue.relativeTo(sumProbability);
 	}
 }
